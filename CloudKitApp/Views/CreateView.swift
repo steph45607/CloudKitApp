@@ -16,6 +16,8 @@ struct CreateView: View {
     @State private var isSmoking = false
     @State private var date = Date.now
     
+    @State private var newReservation: Reservation? = nil
+    
     var body: some View {
         NavigationStack{
             VStack(alignment: .leading, spacing: 8){
@@ -39,12 +41,19 @@ struct CreateView: View {
                     
                     Section{
                         Button{
-//                            add create function here
+                            Task{
+                                //                            add create function here
+                            }
                         } label:{
                             Text("Create reservation")
                                 .multilineTextAlignment(.center)
                                 .frame(maxWidth: .infinity, alignment: .center)
                         }
+                    }
+                    if let reservation = newReservation {
+                        CardView(reservation: reservation)
+                    } else {
+//                        Text("")
                     }
                 }
                 .cornerRadius(20)

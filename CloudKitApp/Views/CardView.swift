@@ -9,32 +9,33 @@ import SwiftUI
 
 struct CardView: View {
     
+    var reservation : Reservation
     
     var body: some View {
         VStack(spacing: 12){
             HStack{
-                Text("Edward")
+                Text(reservation.user)
                     .font(.title3)
                     .fontWeight(.semibold)
                 Spacer()
                 HStack{
-                    Text("4")
-                    Image(systemName: "person.fill")
+                    Text("\(reservation.guests)")
+                    Image(systemName: "person.3.fill")
                 }
             }
             HStack(alignment:.bottom){
                 VStack(alignment: .leading){
                     HStack{
                         Image(systemName: "calendar")
-                        Text("23 Sept 2024")
+                        Text(reservation.date, format: .dateTime.day().month().year())
                     }
                     HStack{
                         Image(systemName: "clock")
-                        Text("07:00")
+                        Text(reservation.date, format: .dateTime.hour().minute())
                     }
                 }
                 Spacer()
-                Text("Non-smoking")
+                Text(reservation.isSmoking ? "Smoking" : "Non-smoking")
             }
         }
         .padding()
@@ -44,5 +45,5 @@ struct CardView: View {
 }
 
 #Preview {
-    CardView()
+    CardView(reservation: Reservation(user: "Alvin", guests: 5, isSmoking: true, date: Date.now))
 }

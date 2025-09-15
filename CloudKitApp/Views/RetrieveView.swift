@@ -21,8 +21,8 @@ struct RetrieveView: View {
                     "In this page, it will show all reservations ever made. Use the filter to show matching reservations."
                 )
                 List{
-                    ForEach(reservations, id: \.self){ reservation in
-                        Text(reservation)
+                    ForEach(vm.reservations, id: \.self.recordId){ reservation in
+                        CardView(reservation: reservation)
                     }
                 }
                 .searchable(text: $search)
@@ -32,8 +32,9 @@ struct RetrieveView: View {
             .padding()
             .navigationTitle("Retrieve record")
             .onAppear(){
-                //                add getAll function here
-                //                add to the reservation array
+                Task{
+//                    populate here
+                }
             }
         }
     }

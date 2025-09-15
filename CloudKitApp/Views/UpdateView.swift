@@ -15,7 +15,13 @@ struct UpdateView: View {
     @State private var pax = 2
     @State private var isSmoking = false
     @State private var date = Date.now
-
+    
+    @State private var currentReservation: Reservation? = nil
+    @State private var updatedReservation: Reservation? = nil
+    
+    @State private var updatedGuests = 0
+    @State private var updatedDate = Date.now
+    @State private var updatedIsSmoking = false
     
     var body: some View {
         NavigationStack{
@@ -27,61 +33,75 @@ struct UpdateView: View {
                     "A user just called under the name Edward. He wants to change to a smoking room and the number of guest would be 3."
                 )
                 Spacer()
-                VStack(spacing: 12){
-                    HStack{
-                        Text("Edward")
-                            .font(.title3)
-                            .fontWeight(.semibold)
-                        Spacer()
-                        HStack{
-                            Text("4")
-                            Image(systemName: "person.fill")
+                Form {
+                    // --- Preview card
+                    Section {
+                        if let reservation = currentReservation {
+                            CardView(reservation: reservation)
+                        } else {
+                            Text("No reservation found")
                         }
                     }
-                    HStack(alignment:.bottom){
-                        VStack(alignment: .leading){
-                            HStack{
-                                Image(systemName: "calendar")
-                                Text("23 Sept 2024")
-                            }
-                            HStack{
-                                Image(systemName: "clock")
-                                Text("07:00")
+                                    
+                    // --- Editable fields
+                    Section(header: Text("Search by Name")) {
+                        TextField("Name", text: $name)
+                            .textInputAutocapitalization(.never)
+                            .autocorrectionDisabled()
+                    }
+                                    
+                    Section(header: Text("Update Details")) {
+                        Stepper(
+                            "\(updatedGuests.formatted()) guests",
+                            value: $updatedGuests,
+                            in: 2...20,
+                            step: 1
+                        )
+                        Toggle("Smoking Room", isOn: $updatedIsSmoking)
+                        DatePicker(
+                            "Date",
+                            selection: $updatedDate
+//                            displayedComponents: .date
+                        )
+                    }
+                                    
+                    // --- Update button
+                    Section {
+                        Button("Update reservation") {
+                            Task {
+//                                guard let res = vm.getByName(name).first else {
+//                                    return
+//                                }
+//                                currentReservation = res
+//                                                
+//                                var newValues: [String: Any] = [:]
+//                                                
+//                                if updatedGuests != 0 && updatedGuests != res.guests {
+//                                    newValues["guests"] = updatedGuests
+//                                }
+//                                if updatedIsSmoking != res.isSmoking {
+//                                    newValues["isSmoking"] = updatedIsSmoking
+//                                }
+//                                if updatedDate != res.date {
+//                                    newValues["date"] = updatedDate
+//                                }
+//                                                
+//                                if !newValues.isEmpty {
+//                                    try await vm
+//                                        .updateByName(
+//                                            name,
+//                                            newValues: newValues
+//                                        )
+//                                    currentReservation = vm
+//                                        .getByName(name).first
+//                                }
                             }
                         }
-                        Spacer()
-                        Text("Non-smoking")
+                        .frame(maxWidth: .infinity, alignment: .center)
                     }
                 }
-                .padding()
-                .background(.background.secondary)
                 .cornerRadius(20)
-                
-                Form{
-                    TextField("Name",text: $name)
-                    Stepper(
-                        "\(pax.formatted()) guests",
-                        value: $pax,
-                        in: 2...20,
-                        step: 1
-                    )
-                    Toggle("Smoking Room", isOn: $isSmoking)
-                    DatePicker("Date", selection: $date)
-                        .datePickerStyle(.compact)
-                    
-                    Section{
-                        Button{
-                            //                            add update button here
-                            //                            refresh the view card
-                        } label:{
-                            Text("Update reservation")
-                                .multilineTextAlignment(.center)
-                                .frame(maxWidth: .infinity, alignment: .center)
-                        }
-                    }
-                }
-                .cornerRadius(20)
-//                Text("After updating the data will be updated in the card, it will also changed in the public database in the CloudKit.")
+                //                Text("After updating the data will be updated in the card, it will also changed in the public database in the CloudKit.")
                 
             }
             .padding()

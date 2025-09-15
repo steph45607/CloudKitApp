@@ -35,23 +35,27 @@ struct DeleteView: View {
                 .padding()
                 .background(.background.secondary)
                 .cornerRadius(8)
-                List{
-                    ForEach(reservations, id: \.self){ reservation in
-                        Text(reservation)
+                List {
+                    ForEach(vm.reservations, id: \.self.recordId) { reservation in
+                        CardView(reservation: reservation)
                     }
-                                        .onDelete(perform: { indexSet in
-                                            for index in indexSet {
-                                                Task {
-//                                                    delete function here
-                                                }
-                                            }
-                                        })
+                    .onDelete(perform: { indexSet in
+                        for index in indexSet {
+                            Task {
+//                                try await vm.dele(vm.user[index])
+                            }
+                        }
+                    })
                 }
-                .cornerRadius(8)
                 Spacer()
             }
             .padding()
             .navigationTitle("Delete record")
+            .onAppear(){
+                Task{
+//                    populate here
+                }
+            }
         }
     }
 }
