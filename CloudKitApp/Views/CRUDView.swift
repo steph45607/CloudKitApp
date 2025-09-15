@@ -1,5 +1,5 @@
 //
-//  UpdateView.swift
+//  CRUDView.swift
 //  CloudKitApp
 //
 //  Created by Stephanie Staniswinata on 12/09/25.
@@ -7,15 +7,18 @@
 
 import SwiftUI
 
-struct UpdateView: View {
+struct CRUDView: View {
+    
+    @EnvironmentObject private var vm : ReservationViewModel
+    
     var body: some View {
         NavigationStack{
             Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
-                .navigationTitle("Update record")
+                .navigationTitle("All in one")
         }
     }
 }
 
 #Preview {
-    UpdateView()
+    CRUDView()
 }

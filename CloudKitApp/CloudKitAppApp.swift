@@ -12,6 +12,7 @@ struct CloudKitAppApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environment(ReservationViewModel())
         }
     }
 }
