@@ -1,2 +1,2 @@
 # CloudKitApp
-learn about CloudKit and CRUD
+learn about CloudKit CRUD
