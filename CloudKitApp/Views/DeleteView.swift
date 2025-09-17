@@ -28,7 +28,7 @@ struct DeleteView: View {
                         )
                         .foregroundColor(.blue)
                     Text(
-                        "Hi, I would like to cancel my reservation please. My name is Jessica. Yeah the one for 23 September 2024. Thank you!"
+                        "Hi, I would like to cancel my reservation please. Thank you!"
                     )
                     .italic()
                 }
@@ -36,13 +36,13 @@ struct DeleteView: View {
                 .background(.background.secondary)
                 .cornerRadius(8)
                 List {
-                    ForEach(vm.reservations, id: \.self.recordId) { reservation in
+                    ForEach(vm.reservationsArr, id: \.self.recordId) { reservation in
                         CardView(reservation: reservation)
                     }
                     .onDelete(perform: { indexSet in
                         for index in indexSet {
                             Task {
-//                                try await vm.dele(vm.user[index])
+                                try await vm.deleteReservation(vm.reservationsArr[index])
                             }
                         }
                     })
@@ -53,7 +53,7 @@ struct DeleteView: View {
             .navigationTitle("Delete record")
             .onAppear(){
                 Task{
-//                    populate here
+                    try await vm.getAll()
                 }
             }
         }
@@ -62,4 +62,5 @@ struct DeleteView: View {
 
 #Preview {
     DeleteView()
+        .environment(ReservationViewModel())
 }

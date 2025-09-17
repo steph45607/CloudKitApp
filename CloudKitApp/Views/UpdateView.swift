@@ -12,9 +12,9 @@ struct UpdateView: View {
     @EnvironmentObject private var vm : ReservationViewModel
     
     @State private var name = ""
-    @State private var pax = 2
-    @State private var isSmoking = false
-    @State private var date = Date.now
+//    @State private var pax = 0
+//    @State private var isSmoking = false
+//    @State private var date = Date.now
     
     @State private var currentReservation: Reservation? = nil
     @State private var updatedReservation: Reservation? = nil
@@ -27,29 +27,51 @@ struct UpdateView: View {
         NavigationStack{
             VStack(alignment: .leading, spacing: 8){
                 Text(
-                    "In this page, we will learn how to update or edit records that has been submitted or created in the database."
+                    "In this page, we will learn how to update / edit records that has been created in the database."
                 )
-                Text(
-                    "A user just called under the name Edward. He wants to change to a smoking room and the number of guest would be 3."
-                )
+                
                 Spacer()
-                Form {
-                    // --- Preview card
-                    Section {
-                        if let reservation = currentReservation {
-                            CardView(reservation: reservation)
-                        } else {
-                            Text("No reservation found")
+                
+                HStack{
+                    Button{
+                        print("pressed")
+                        Task{
+                            print("task")
+                            currentReservation = try await vm.getByName(name: name)
+                            if currentReservation != nil{
+                                updatedGuests = currentReservation!.guests
+                                updatedIsSmoking = currentReservation!.isSmoking
+                                updatedDate = currentReservation!.date
+                            }
+                            print("task2")
                         }
+                    } label: {
+                        Image(systemName: "magnifyingglass")
+                            .foregroundColor(.secondary)
                     }
-                                    
-                    // --- Editable fields
-                    Section(header: Text("Search by Name")) {
-                        TextField("Name", text: $name)
-                            .textInputAutocapitalization(.never)
-                            .autocorrectionDisabled()
-                    }
-                                    
+                    TextField("Search", text: $name)
+                        .textInputAutocapitalization(.never)
+                        .autocorrectionDisabled()
+                }
+                .padding(8)
+                .background(.background.secondary)
+                .cornerRadius(12)
+                
+                switch vm.searchStatus {
+                case .success(let reservation):
+                    CardView(reservation: reservation)
+                        .padding()
+                        .background(.background.secondary)
+                        .cornerRadius(16)
+                case .error(let text):
+                    Text(text)
+                        .foregroundColor(.red)
+                default:
+                    Text("(Input name of reservation)")
+                        .foregroundColor(.secondary)
+                    
+                }
+                Form {
                     Section(header: Text("Update Details")) {
                         Stepper(
                             "\(updatedGuests.formatted()) guests",
@@ -61,55 +83,42 @@ struct UpdateView: View {
                         DatePicker(
                             "Date",
                             selection: $updatedDate
-//                            displayedComponents: .date
                         )
                     }
                                     
-                    // --- Update button
                     Section {
                         Button("Update reservation") {
                             Task {
-//                                guard let res = vm.getByName(name).first else {
-//                                    return
-//                                }
-//                                currentReservation = res
-//                                                
-//                                var newValues: [String: Any] = [:]
-//                                                
-//                                if updatedGuests != 0 && updatedGuests != res.guests {
-//                                    newValues["guests"] = updatedGuests
-//                                }
-//                                if updatedIsSmoking != res.isSmoking {
-//                                    newValues["isSmoking"] = updatedIsSmoking
-//                                }
-//                                if updatedDate != res.date {
-//                                    newValues["date"] = updatedDate
-//                                }
-//                                                
-//                                if !newValues.isEmpty {
-//                                    try await vm
-//                                        .updateByName(
-//                                            name,
-//                                            newValues: newValues
-//                                        )
-//                                    currentReservation = vm
-//                                        .getByName(name).first
-//                                }
+                                updatedReservation = Reservation(user: name, guests: updatedGuests, isSmoking: updatedIsSmoking, date: updatedDate)
+                                print("local")
+                                try await vm.updateReservation(currentReservation!, updated: updatedReservation!)
+                                print("update")
+                                currentReservation = try await vm.getByName(name: name)
+                                print("fetch")
+                                if currentReservation != nil{
+                                    updatedGuests = currentReservation!.guests
+                                    updatedIsSmoking = currentReservation!.isSmoking
+                                    updatedDate = currentReservation!.date
+                                }
+                                print("all")
                             }
                         }
                         .frame(maxWidth: .infinity, alignment: .center)
                     }
                 }
                 .cornerRadius(20)
-                //                Text("After updating the data will be updated in the card, it will also changed in the public database in the CloudKit.")
+                Text(
+                    "After updating it will change the card details and the database."
+                )
                 
             }
             .padding()
-            .navigationTitle("Update recrod")
+            .navigationTitle("Update record")
         }
     }
 }
 
 #Preview {
     UpdateView()
+        .environment(ReservationViewModel())
 }

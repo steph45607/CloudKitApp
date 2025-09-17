@@ -38,9 +38,9 @@ struct CardView: View {
                 Text(reservation.isSmoking ? "Smoking" : "Non-smoking")
             }
         }
-        .padding()
-        .background(.background.secondary)
-        .cornerRadius(20)
+//        .padding()
+//        .background(.background.secondary)
+//        .cornerRadius(20)
     }
 }
 

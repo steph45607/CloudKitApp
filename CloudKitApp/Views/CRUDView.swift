@@ -21,4 +21,5 @@ struct CRUDView: View {
 
 #Preview {
     CRUDView()
+        .environment(ReservationViewModel())
 }

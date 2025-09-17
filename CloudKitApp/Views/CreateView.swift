@@ -18,16 +18,28 @@ struct CreateView: View {
     
     @State private var newReservation: Reservation? = nil
     
+    
     var body: some View {
         NavigationStack{
             VStack(alignment: .leading, spacing: 8){
                 Text(
                     "In this page we will learn how to create a record and it will be added to the public database in CloudKit."
                 )
-                Text(
-                    "Below is a form to create restarurant reservation for a burger place. Try creating a reservation."
-                )
                 Spacer()
+                switch vm.createStatus{
+                case .success:
+                    Text("Reservation added successfully!")
+                        .foregroundColor(.green)
+                    CardView(reservation: newReservation!)
+                        .padding()
+                        .background(.background.secondary)
+                        .cornerRadius(16)
+                case .error(let text):
+                    Text(text)
+                        .foregroundColor(.red)
+                default:
+                    Text("Add new reservation here:")
+                }
                 Form{
                     TextField("Name",text: $name)
                     Stepper(
@@ -42,18 +54,14 @@ struct CreateView: View {
                     Section{
                         Button{
                             Task{
-                                //                            add create function here
+                                newReservation = Reservation(user: name, guests: pax, isSmoking: isSmoking, date: date)
+                                try await vm.createReservation(newReservation!)
                             }
                         } label:{
                             Text("Create reservation")
                                 .multilineTextAlignment(.center)
                                 .frame(maxWidth: .infinity, alignment: .center)
                         }
-                    }
-                    if let reservation = newReservation {
-                        CardView(reservation: reservation)
-                    } else {
-//                        Text("")
                     }
                 }
                 .cornerRadius(20)
@@ -70,4 +78,5 @@ struct CreateView: View {
 
 #Preview {
     CreateView()
+        .environment(ReservationViewModel())
 }
