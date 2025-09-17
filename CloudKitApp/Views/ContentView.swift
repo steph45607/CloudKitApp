@@ -28,13 +28,14 @@ struct ContentView: View {
             Tab("Delete", systemImage: "trash") {
                 DeleteView()
             }
-            Tab("CRUD", systemImage: "books.vertical") {
-                CRUDView()
-            }
+//            Tab("CRUD", systemImage: "books.vertical") {
+//                CRUDView()
+//            }
         }
     }
 }
 
 #Preview {
     ContentView()
+        .environment(ReservationViewModel())
 }
