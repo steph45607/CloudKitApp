@@ -29,7 +29,7 @@ enum Status{
     
     var createStatus : Status = .idle
     var searchStatus : Status = .idle
-    var updateStatus : Status = .idle
+    //    var updateStatus : Status = .idle
     
     //    to add resrvation object to the public database
     func createReservation(_ reservation: Reservation) async throws{
@@ -80,8 +80,11 @@ enum Status{
     
     func getByName(name: String)async throws -> Reservation?{
         do{
-            let predicate = NSPredicate(format: "user == %@", name)
-            let query = CKQuery(recordType: "Reservation", predicate: predicate)
+            //            let predicate = NSPredicate(format: "user == %@", name)
+            let query = CKQuery(
+                recordType: "Reservation",
+                predicate: NSPredicate(format: "user == %@", name)
+            )
             
             let result = try await db.records(matching: query)
             let records = result.matchResults.compactMap { try? $0.1.get() }
@@ -108,7 +111,6 @@ enum Status{
     
     func getSmoking(isSmoking: Bool)async throws{
         do{
-            //            let predicate = NSPredicate(format: "isSmoking == %@", isSmoking)
             let query = CKQuery(
                 recordType: "Reservation",
                 predicate: NSPredicate(format: "isSmoking ==  \(isSmoking)")
@@ -169,7 +171,7 @@ enum Status{
             let records = result.matchResults.compactMap{ try? $0.1.get() }
             //            for each record, it will be deleted
             for record in records {
-//                try await db.deleteRecord(withID: record.recordID)
+                //                try await db.deleteRecord(withID: record.recordID)
                 reservationDict.removeValue(forKey: record.recordID)
             }
         }

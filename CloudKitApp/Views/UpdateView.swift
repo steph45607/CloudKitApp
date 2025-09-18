@@ -34,16 +34,13 @@ struct UpdateView: View {
                 
                 HStack{
                     Button{
-                        print("pressed")
                         Task{
-                            print("task")
                             currentReservation = try await vm.getByName(name: name)
                             if currentReservation != nil{
                                 updatedGuests = currentReservation!.guests
                                 updatedIsSmoking = currentReservation!.isSmoking
                                 updatedDate = currentReservation!.date
                             }
-                            print("task2")
                         }
                     } label: {
                         Image(systemName: "magnifyingglass")
@@ -52,6 +49,17 @@ struct UpdateView: View {
                     TextField("Search", text: $name)
                         .textInputAutocapitalization(.never)
                         .autocorrectionDisabled()
+                        .submitLabel(.search)
+                        .onSubmit {
+                            Task{
+                                currentReservation = try await vm.getByName(name: name)
+                                if currentReservation != nil{
+                                    updatedGuests = currentReservation!.guests
+                                    updatedIsSmoking = currentReservation!.isSmoking
+                                    updatedDate = currentReservation!.date
+                                }
+                            }
+                        }
                 }
                 .padding(8)
                 .background(.background.secondary)
