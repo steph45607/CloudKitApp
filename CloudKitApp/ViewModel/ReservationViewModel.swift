@@ -29,7 +29,6 @@ enum Status{
     
     var createStatus : Status = .idle
     var searchStatus : Status = .idle
-    //    var updateStatus : Status = .idle
     
     //    to add resrvation object to the public database
     func createReservation(_ reservation: Reservation) async throws{
@@ -48,9 +47,7 @@ enum Status{
             print(error.localizedDescription)
             createStatus = .error(text: error.localizedDescription)
             return
-            //            return error.localizedDescription
         }
-        //        return "Reservation created"
         createStatus = .success(reservation: reservation)
         return
     }
@@ -80,7 +77,6 @@ enum Status{
     
     func getByName(name: String)async throws -> Reservation?{
         do{
-            //            let predicate = NSPredicate(format: "user == %@", name)
             let query = CKQuery(
                 recordType: "Reservation",
                 predicate: NSPredicate(format: "user == %@", name)
@@ -158,21 +154,28 @@ enum Status{
         }
     }
     
+//    func removeAll() async throws {
+//        do{
+//            //            get all
+//            let query = CKQuery(
+//                recordType: "Reservation",
+//                predicate: NSPredicate(value: true)
+//            )
+//            //            store matching records
+//            let result = try await db.records(matching: query)
+//            //            store the records only from the tuple
+//            let records = result.matchResults.compactMap{ try? $0.1.get() }
+//            //            for each record, it will be deleted
+//            for record in records {
+//                //                try await db.deleteRecord(withID: record.recordID)
+//                reservationDict.removeValue(forKey: record.recordID)
+//            }
+//        }
+//    }
     func removeAll() async throws {
         do{
-            //            get all
-            let query = CKQuery(
-                recordType: "Reservation",
-                predicate: NSPredicate(value: true)
-            )
-            //            store matching records
-            let result = try await db.records(matching: query)
-            //            store the records only from the tuple
-            let records = result.matchResults.compactMap{ try? $0.1.get() }
-            //            for each record, it will be deleted
-            for record in records {
-                //                try await db.deleteRecord(withID: record.recordID)
-                reservationDict.removeValue(forKey: record.recordID)
+            for record in reservationDict {
+                reservationDict.removeValue(forKey: record.key)
             }
         }
     }
